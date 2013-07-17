@@ -1,0 +1,30 @@
+motorLogger2: 
+
+	I tried to keep motorLogger2 as general as motorLogger. This allows anyone
+	to just pick up the file and add it to their test. 
+
+	It can also be made very specific via the "metadata" passed into the startMotorLog function. 
+	For example, in metadata, you can give the coordinates of a button. 
+	Then in the parser, you can figure out if the button has been clicked by matching all mouseDown
+	events with the coordinates of the button. 
+
+
+Interface : 
+	function startMouseLog(metadata) -> null
+		// starts the mouseLogger and saves any "metadata" thatis passed to the function
+		Note : the mouseLogger must be stopped before you can start it
+
+	function stopMouseLog() -> null
+		// stops the mouseLogger and pushes all data onto the end of the motorLog
+		Note : the mouseLogger must be started before you can stop it
+
+
+	function sendMotorLog(destinationURL) -> null
+		// sends an ajax request to "destinationURL" with the following : 
+			[{metadata : yourMetaData1, moves: recordedMouse1}, 
+			 {metadata :  yourMetaData2, moves: recordedMouse2}, 
+			 ...
+			] 
+
+		Note : this will not stop the mouseLogger or send any of the currently logging data. 
+			stopMotorLog() must be called first if you want to do that. 
