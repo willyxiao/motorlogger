@@ -14,6 +14,13 @@ Interface :
 		// starts the mouseLogger and saves any "metadata" thatis passed to the function
 		Note : the mouseLogger must be stopped before you can start it
 
+/*		
+	function setMetaData(metadata) -> null 
+		// overwrites the Meta-Data of the current trial with metadata
+		Note : the mouseLogger must be started before you can set the metadata, otherwise use startMouseLog(metadata) to add
+			the metadata. 
+*/
+	
 	function stopMouseLog() -> null
 		// stops the mouseLogger and pushes all data onto the end of the motorLog
 		Note : the mouseLogger must be started before you can stop it

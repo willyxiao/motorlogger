@@ -13,15 +13,14 @@ function startMouseLog(metadata) {
 		mouseLogging = true; 
 		motorLoggerMetaData = metadata; 
 		
-		$(document).on("mousemove", onMouseMove); 
-		$(document).on("mouseenter", onMouseEnter); 
-		$(document).on("mouseleave", onMouseLeave); 
-		$(document).on("mouseup", onMouseUp); 
-		$(document).on("mousedown", onMouseDown); 
-		$(document).on("click", onClick); 
-		$(document).on("scroll", onScroll); 
-	}
-	else {
+		document.addEventListener("mousemove", onMouseMove); 
+		document.addEventListener("mouseenter", onMouseEnter); 
+		document.addEventListener("mouseleave", onMouseLeave); 
+		document.addEventListener("mouseup", onMouseUp); 
+		document.addEventListener("mousedown", onMouseDown); 
+		document.addEventListener("click", onClick); 
+		document.addEventListener("scroll", onScroll); 
+	} else {
 		console.error("mouseLogger has already been started."); 
 	}
 }
@@ -30,13 +29,13 @@ function stopMouseLog() {
 	if(mouseLogging) {		
 		mouseLogging = false;
 
-		$(document).off("mousemove", onMouseMove); 
-		$(document).off("mouseenter", onMouseEnter); 
-		$(document).off("mouseleave", onMouseLeave); 
-		$(document).off("mouseup", onMouseUp); 
-		$(document).off("mousedown", onMouseDown); 
-		$(document).off("click", onClick); 
-		$(document).off("scroll", onScroll); 	
+		document.removeEventListener("mousemove", onMouseMove); 
+		document.removeEventListener("mouseenter", onMouseEnter); 
+		document.removeEventListener("mouseleave", onMouseLeave); 
+		document.removeEventListener("mouseup", onMouseUp); 
+		document.removeEventListener("mousedown", onMouseDown); 
+		document.removeEventListener("click", onClick); 
+		document.removeEventListener("scroll", onScroll); 	
 		
 		// push the current motorlogger info onto the motorLog and reset
 		// the motorLoggertemporary items
@@ -47,8 +46,15 @@ function stopMouseLog() {
 		
 		motorLoggerMetaData = null;	
 		motorLoggerMoves.splice(0, motorLoggerMoves.length); 
+	} else {
+		console.error("mouseLogger has not been started."); 
 	}
-	else {
+}
+
+function setData(data) {
+	if(mouseLogging) {
+		motorLoggerMoves[motorLog.length] = {data : data}; 
+	} else {
 		console.error("mouseLogger has not been started."); 
 	}
 }
@@ -80,23 +86,23 @@ function onMouseMove(ev)
 function onMouseButtonEvent(ev, type) {
     ev = ev || window.event;
     if (console && debug) 
-	console.log("Click on " + ev.target.type);
+		console.log("Click on " + ev.target.type);
     
     // create a jQuery object for the element the click was performed on
     var jElement = $(ev.target);
     var targetType = "?";
     if (jElement.is("SELECT") || jElement.is("OPTION") || jElement.is("TEXTAREA") || jElement.is("BUTTON") || jElement.is("LABEL")) {
-	targetType = "hit:" + ev.target.nodeName;
+		targetType = "hit:" + ev.target.nodeName + "-id:" + jElement.attr("id");
     } else if (jElement.is("INPUT")) {
-	targetType = "hit:" + ev.target.nodeName + "-" + ev.target.type;
+		targetType = "hit:" + ev.target.nodeName + "-" + ev.target.type + "-id:" + jElement.attr("id");
     } else {	
-	// figure out if the click occured on an another type of clickable elemenet or an element whose parent is a valid target
-	var enclosingTarget = getTheEnclosingTarget(jElement);
-	targetType = "miss:" + ev.target.nodeName;
-	if (enclosingTarget.el) {
-	    jElement = enclosingTarget.el;
-	    targetType = "hit:" + enclosingTarget.desc;
-	}
+		// figure out if the click occured on an another type of clickable elemenet or an element whose parent is a valid target
+		var enclosingTarget = getTheEnclosingTarget(jElement);
+		targetType = "miss:" + ev.target.nodeName;
+		if (enclosingTarget.el) {
+			jElement = enclosingTarget.el;
+			targetType = "hit:" + enclosingTarget.desc + "-id:" + jElement.attr("id");
+		}
     }
     
     // get the location of the element (relative to the client)
@@ -113,10 +119,10 @@ function onMouseButtonEvent(ev, type) {
 
 function documentToClientCoordinates(mouseEvent, documentX, documentY) {
     if (console) {
-	console.log("About to convert coordinates");
-	console.log("documentX: " + documentX);
-	console.log("mouse client X: " + mouseEvent.clientX);
-	console.log("mouse page X: " + mouseEvent.pageX);
+		console.log("About to convert coordinates");
+		console.log("documentX: " + documentX);
+		console.log("mouse client X: " + mouseEvent.clientX);
+		console.log("mouse page X: " + mouseEvent.pageX);
     }
     return {
         x: documentX + mouseEvent.clientX - mouseEvent.pageX,
@@ -158,15 +164,15 @@ var getTheEnclosingTarget = function(jQelement) {
     
     if (jQelement.is("A")) {
         return {
-	    el: jQelement,
-	    desc: "A"
+			el: jQelement,
+			desc: "A"
         };
     }
     
     if (jQelement.hasClass("mouseTarget")) {
         return {
-	    el: jQelement,
-	    desc: "mouseTarget-" + jQelement[0].nodeName
+			el: jQelement,
+			desc: "mouseTarget-" + jQelement[0].nodeName
         };
     }
     
@@ -179,7 +185,7 @@ var getTheEnclosingTarget = function(jQelement) {
     
     var res = getTheEnclosingTarget(jQelement.parent());
     if (res.el == null)
-    return res;
+		return res;
     res.desc = res.desc + "->" + jQelement[0].nodeName;
     return res;    
 }
@@ -193,11 +199,10 @@ function sendMotorLog(destinationURL) {
 		motorLoggerSending = true;
 		motorLogTemp = motorLogTemp.concat(motorLog.slice(0)); 
 		motorLog.splice(0, motorLog.length); 
-
 		
 		$.ajax({
 			url: destinationURL,
-				data: {data : motorLogTemp.slice(0)},
+				data: {motorLog : motorLogTemp.slice(0)},
 				type: 'POST',
 				error: function(r,s,t) {},
 				success: function(d,s,r){
