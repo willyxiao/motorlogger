@@ -53,7 +53,7 @@ function stopMouseLog() {
 
 function setData(data) {
 	if(mouseLogging) {
-		motorLoggerMoves[motorLog.length] = {data : data}; 
+		motorLoggerMoves[motorLog.length] = {a : "setData", data : data}; 
 	} else {
 		console.error("mouseLogger has not been started."); 
 	}
@@ -61,17 +61,17 @@ function setData(data) {
 
 function onScroll(ev) {
     ev = ev || window.event;
-    motorLoggerMoves[motorLoggerMoves.length] = "scroll," + ev.timeStamp + "\n";
+    motorLoggerMoves[motorLoggerMoves.length] = {a : "scroll", t : ev.timeStamp};
 }
 
 function onMouseLeave(ev) {
     ev = ev || window.event;
-    motorLoggerMoves[motorLoggerMoves.length] = "break," + ev.timeStamp + "\n";
+    motorLoggerMoves[motorLoggerMoves.length] = {a : "break", t : ev.timeStamp};
 }
 
 function onMouseEnter(ev) {
     ev = ev || window.event;
-    motorLoggerMoves[motorLoggerMoves.length] = "enter," + ev.timeStamp + "\n";
+    motorLoggerMoves[motorLoggerMoves.length] = {a : "enter", t : ev.timeStamp};
 }
 
 function onMouseMove(ev)
@@ -80,7 +80,7 @@ function onMouseMove(ev)
 	console.log("m,"+ev.clientX+","+ev.clientY);
 
     ev = ev || window.event;
-    motorLoggerMoves[motorLoggerMoves.length] = "m,"+ev.clientX+","+ev.clientY+","+ev.timeStamp+"\n";
+    motorLoggerMoves[motorLoggerMoves.length] = {a : "m", t : ev.timeStamp, p : ev.clientX + "," + ev.clientY};
 }
 
 function onMouseButtonEvent(ev, type) {
@@ -108,13 +108,20 @@ function onMouseButtonEvent(ev, type) {
     // get the location of the element (relative to the client)
     var offset = jElement.offset();
     var clientOffset = documentToClientCoordinates(ev, offset.left, offset.top);
-
+	var dataAttr = jElement.data(); 
 
     // create log entry
     if (console && debug > 2) 
 	console.log("e-" + type + ","+targetType+","+"1,"+jElement.width()+","+jElement.height()+","+clientOffset.x+","+clientOffset.y+","+ev.clientX+","+ev.clientY);
 
-    motorLoggerMoves[motorLoggerMoves.length] = "e-" + type + ","+targetType+","+"1,"+jElement.width()+","+jElement.height()+","+clientOffset.x+","+clientOffset.y+","+ev.clientX+","+ev.clientY+","+ev.timeStamp+"\n";
+    motorLoggerMoves[motorLoggerMoves.length] = {
+		a : "e-" + type, 
+		t : ev.timeStamp, 
+		p : ev.clientX + "," + ev.clientY,  
+		taType : targetType, 
+		taPos : "1,"+jElement.width()+","+jElement.height()+","+clientOffset.x+","+clientOffset.y,
+		taData : dataAttr
+	};
 }
 
 function documentToClientCoordinates(mouseEvent, documentX, documentY) {

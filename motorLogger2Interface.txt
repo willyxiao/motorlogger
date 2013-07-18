@@ -10,16 +10,29 @@ motorLogger2:
 
 
 Interface : 
+	type MotorLog = {
+		metadata : yourmetadata, 
+		moves : [move, move ...]
+	}
+
+	type Move = {
+		a : action 
+		
+		// everything but a setData has a timestamp
+		[t : timestamp] // everything but setData has a timestamp
+		
+		// leave, scroll, enter, and setData do not have positions
+		[p : position of the mouse]
+		
+		// only on mouse-down, mouse-up, and click events
+		[taType : target-type]
+		[taPos : target-pos]
+		[taData : target-data] //
+	}
+
 	function startMouseLog(metadata) -> null
 		// starts the mouseLogger and saves any "metadata" thatis passed to the function
-		Note : the mouseLogger must be stopped before you can start it
-
-/*		
-	function setMetaData(metadata) -> null 
-		// overwrites the Meta-Data of the current trial with metadata
-		Note : the mouseLogger must be started before you can set the metadata, otherwise use startMouseLog(metadata) to add
-			the metadata. 
-*/
+		Note : the mouseLogger must be stopped before you can start it 
 	
 	function stopMouseLog() -> null
 		// stops the mouseLogger and pushes all data onto the end of the motorLog
@@ -27,11 +40,56 @@ Interface :
 
 
 	function sendMotorLog(destinationURL) -> null
-		// sends an ajax request to "destinationURL" with the following : 
-			[{metadata : yourMetaData1, moves: recordedMouse1}, 
-			 {metadata :  yourMetaData2, moves: recordedMouse2}, 
-			 ...
-			] 
-
+		// sends an ajax request to "destinationURL" with an array of the motorLogs currently stored in cache
 		Note : this will not stop the mouseLogger or send any of the currently logging data. 
 			stopMotorLog() must be called first if you want to do that. 
+			
+
+	function setData(data) -> null 
+		// appends the data onto the end of the current motorLog as {a : "setData", data : data}
+		Note : the mouseLogger must be started before you can set the data, otherwise use startMouseLog(metadata).
+
+Example Output to Server : 
+	{"motorLog":[
+		{"metadata":"10","moves":
+			[{"a":"m","t":"1374166391095","p":"237,111"},
+			{"a":"m","t":"1374166391103","p":"243,111"},
+			{"a":"m","t":"1374166391111","p":"255,111"},
+			{"a":"m","t":"1374166391119","p":"267,111"},
+			{"a":"m","t":"1374166391127","p":"282,111"},
+			{"a":"m","t":"1374166391135","p":"294,111"},
+			{"a":"m","t":"1374166391143","p":"309,111"},
+			{"a":"m","t":"1374166391151","p":"318,111"},
+			{"a":"m","t":"1374166391159","p":"339,111"},
+			{"a":"m","t":"1374166391167","p":"357,111"},
+			{"a":"m","t":"1374166391175","p":"375,111"},
+			{"a":"m","t":"1374166391183","p":"390,111"},
+			{"a":"m","t":"1374166391191","p":"402,111"},
+			{"a":"m","t":"1374166391199","p":"408,111"},
+			{"a":"m","t":"1374166391207","p":"414,111"},
+			{"a":"m","t":"1374166391255","p":"420,111"},
+			{"a":"m","t":"1374166391263","p":"423,111"},
+			{"a":"m","t":"1374166391271","p":"432,111"},
+			{"a":"m","t":"1374166391287","p":"435,111"}]},
+		{"metadata":"18","moves":
+			[{"a":"e-d","t":"1374166399064","p":"204,48","taType":"hit:mouseTarget-DIV->DIV-id:foo","taPos":"1,855,14,10,40","taData":{"first":"quux","second":"booboo"}},
+			{"a":"e-u","t":"1374166399184","p":"204,48","taType":"hit:mouseTarget-DIV->DIV-id:foo","taPos":"1,855,14,10,40","taData":{"first":"quux","second":"booboo"}},
+			{"a":"e-c","t":"1374166399187","p":"204,48","taType":"hit:mouseTarget-DIV->DIV-id:foo","taPos":"1,855,14,10,40","taData":{"first":"quux","second":"booboo"}},
+			{"a":"m","t":"1374166399189","p":"204,48"}]},
+		{"metadata":"21","moves":
+			[{"a":"e-d","t":"1374166401744","p":"249,33","taType":"miss:DIV","taPos":"1,851,26,10,10"},
+			{"a":"e-u","t":"1374166401831","p":"249,33","taType":"miss:DIV","taPos":"1,851,26,10,10"},
+			{"a":"e-c","t":"1374166401833","p":"249,33","taType":"miss:DIV","taPos":"1,851,26,10,10"},
+			{"a":"setData", "data":{"foo":"bar","baz":"quux"}}, 
+			{"a":"m","t":"1374166401837","p":"249,33"},
+			{"a":"m","t":"1374166401967","p":"249,36"},
+			{"a":"m","t":"1374166401983","p":"249,42"},
+			{"a":"m","t":"1374166401999","p":"249,45"},
+			{"a":"e-d","t":"1374166402271","p":"249,45","taType":"hit:mouseTarget-DIV->DIV-id:foo","taPos":"1,855,14,10,40","taData":{"first":"quux","second":"booboo"}},
+			{"a":"e-u","t":"1374166402391","p":"249,45","taType":"hit:mouseTarget-DIV->DIV-id:foo","taPos":"1,855,14,10,40","taData":{"first":"quux","second":"booboo"}},
+			{"a":"e-c","t":"1374166402396","p":"249,45","taType":"hit:mouseTarget-DIV->DIV-id:foo","taPos":"1,855,14,10,40","taData":{"first":"quux","second":"booboo"}},
+			{"a":"m","t":"1374166402399","p":"249,45"},
+			{"a":"m","t":"1374166402655","p":"249,48"},
+			{"a":"m","t":"1374166402671","p":"249,51"},
+			{"a":"m","t":"1374166402680","p":"249,60"}]}
+	]}
