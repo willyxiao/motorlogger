@@ -10,7 +10,7 @@ motorLogger2:
 
 
 Interface : 
-	type MotorLogs = {
+	type MotorLog = {
 		metadata : yourmetadata, 
 		moves : [Move, Move ...]
 	}
@@ -38,13 +38,11 @@ Interface :
 		// stops the mouseLogger and pushes all data onto the end of the motorLog
 		Note : the mouseLogger must be started before you can stop it
 
-
 	function sendMotorLog(destinationURL) -> null
 		// sends an ajax request to "destinationURL" with an array of the motorLogs currently stored in cache
 		Note : this will not stop the mouseLogger or send any of the currently logging data. 
 			stopMotorLog() must be called first if you want to do that. 
 			
-
 	function setData(data) -> null 
 		// appends the data onto the end of the current motorLog as {a : "setData", data : data}
 		Note : the mouseLogger must be started before you can set the data, otherwise use startMouseLog(metadata).
