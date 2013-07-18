@@ -10,16 +10,16 @@ motorLogger2:
 
 
 Interface : 
-	type MotorLog = {
+	type MotorLogs = {
 		metadata : yourmetadata, 
-		moves : [move, move ...]
+		moves : [Move, Move ...]
 	}
 
 	type Move = {
 		a : action 
 		
 		// everything but a setData has a timestamp
-		[t : timestamp] // everything but setData has a timestamp
+		[t : timestamp]
 		
 		// leave, scroll, enter, and setData do not have positions
 		[p : position of the mouse]
@@ -27,7 +27,7 @@ Interface :
 		// only on mouse-down, mouse-up, and click events
 		[taType : target-type]
 		[taPos : target-pos]
-		[taData : target-data] //
+		[taData : target-data] //all the data attributes of a clicked element
 	}
 
 	function startMouseLog(metadata) -> null
