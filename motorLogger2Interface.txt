@@ -3,7 +3,8 @@ motorLogger2:
 	I tried to keep motorLogger2 as general as motorLogger. This allows anyone
 	to just pick up the file and add it to their test. 
 
-	It can also be made very specific via the "metadata" passed into the startMotorLog function. 
+	It can also be made very specific via the "metadata" passed into the startMotorLog function, or the data passed into the setData function 
+	
 	For example, in metadata, you can give the coordinates of a button. 
 	Then in the parser, you can figure out if the button has been clicked by matching all mouseDown
 	events with the coordinates of the button. 
