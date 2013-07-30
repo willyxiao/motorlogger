@@ -9,6 +9,8 @@ motorLogger2:
 	Then in the parser, you can figure out if the button has been clicked by matching all mouseDown
 	events with the coordinates of the button. 
 
+	motorLogger2 also collects data-attributes of all the divs that it clicks. This means you can also put 
+	information that you want to mouselog to capture about the divs in a data-ATTRIBUTENAME tag. 
 
 Interface : 
 	type MotorLog = {
@@ -17,22 +19,22 @@ Interface :
 	}
 
 	type Move = {
-		a : action 
+		a : action, 
 		
 		// everything but a setData has a timestamp
-		[t : timestamp]
+		[t : timestamp], 
 		
 		// leave, scroll, enter, and setData do not have positions
-		[p : position of the mouse]
+		[p : position of the mouse], 
 		
 		// only on mouse-down, mouse-up, and click events
-		[taType : target-type]
-		[taPos : target-pos]
+		[taType : target-type],
+		[taPos : target-pos],
 		[taData : target-data] //all the data attributes of a clicked element
 	}
 
 	function startMouseLog(metadata) -> null
-		// starts the mouseLogger and saves any "metadata" thatis passed to the function
+		// starts the mouseLogger and saves any "metadata" that is passed to the function
 		Note : the mouseLogger must be stopped before you can start it 
 	
 	function stopMouseLog() -> null
