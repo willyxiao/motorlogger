@@ -51,8 +51,8 @@ function MotorLogger() {
 			// push the current motorlogger info onto the motorLog and reset
 			// the motorLoggertemporary items
 			motorLog[motorLog.length] = {
-				metadata: motorLoggerMetaData, 
-				moves: motorLoggerMoves.slice(0),  
+				metadata: motorLoggerMetaData, // metadata
+				moves: motorLoggerMoves.slice(0), // moves
 			}; 
 			
 			motorLoggerMetaData = null;	
@@ -220,15 +220,15 @@ function MotorLogger() {
 			
 			$.ajax({
 				url: destinationURL,
-					data: {motorLog : motorLogTemp.slice(0)},
-					type: 'POST',
-					error: function(r,s,t) {},
-					success: function(d,s,r){
-						// if successful, then clear the local cache
-						motorLogTemp.splice(0, motorLogTemp.length);
-						// record that we are done sending
-						motorLoggerSending = false;
-					}
+				data: {motorlog : JSON.stringify(motorLogTemp.slice(0))},
+				type: 'POST',
+				error: function(r,s,t) {},
+				success: function(d,s,r){
+					// if successful, then clear the local cache
+					motorLogTemp.splice(0, motorLogTemp.length);
+					// record that we are done sending
+					motorLoggerSending = false;
+				}
 			});
 		}
 	}

@@ -13,8 +13,8 @@ motorLogger2:
 	information that you want to mouselog to capture about the divs in a data-ATTRIBUTENAME tag. 
 
 Interface : 
-	type MotorLog = {
-		metadata : yourmetadata, 
+	type Motorlog = {
+		metadata : yourmetadata,
 		moves : [Move, Move ...]
 	}
 
@@ -51,8 +51,8 @@ Interface :
 		Note : the mouseLogger must be started before you can set the data, otherwise use startMouseLog(metadata).
 
 Example Output to Server : 
-	{"motorLog":[
-		{"metadata":"10","moves":
+	{"ML":[
+		{"MD":"10","M":
 			[{"a":"m","t":"1374166391095","p":"237,111"},
 			{"a":"m","t":"1374166391103","p":"243,111"},
 			{"a":"m","t":"1374166391111","p":"255,111"},
@@ -72,12 +72,12 @@ Example Output to Server :
 			{"a":"m","t":"1374166391263","p":"423,111"},
 			{"a":"m","t":"1374166391271","p":"432,111"},
 			{"a":"m","t":"1374166391287","p":"435,111"}]},
-		{"metadata":"18","moves":
+		{"MD":"18","M":
 			[{"a":"e-d","t":"1374166399064","p":"204,48","taType":"hit:mouseTarget-DIV->DIV-id:foo","taPos":"1,855,14,10,40","taData":{"first":"quux","second":"booboo"}},
 			{"a":"e-u","t":"1374166399184","p":"204,48","taType":"hit:mouseTarget-DIV->DIV-id:foo","taPos":"1,855,14,10,40","taData":{"first":"quux","second":"booboo"}},
 			{"a":"e-c","t":"1374166399187","p":"204,48","taType":"hit:mouseTarget-DIV->DIV-id:foo","taPos":"1,855,14,10,40","taData":{"first":"quux","second":"booboo"}},
 			{"a":"m","t":"1374166399189","p":"204,48"}]},
-		{"metadata":"21","moves":
+		{"MD":"21","M":
 			[{"a":"e-d","t":"1374166401744","p":"249,33","taType":"miss:DIV","taPos":"1,851,26,10,10"},
 			{"a":"e-u","t":"1374166401831","p":"249,33","taType":"miss:DIV","taPos":"1,851,26,10,10"},
 			{"a":"e-c","t":"1374166401833","p":"249,33","taType":"miss:DIV","taPos":"1,851,26,10,10"},
