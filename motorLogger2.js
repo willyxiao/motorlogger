@@ -1,17 +1,21 @@
-/****************************
+/*
 * motorLogger2.js 
 * For explanation look at motorLogger2Interface.txt
-*****************************/
-function MotorLogger() {
+* Requires: jQuery
+*/
+
+var MotorLogger = (function($) {
+        var Module = {};
+
 	/* ======= EXPOSE THE FOUR FUNCTIONS IN THE INTERFACE ======== */
-	this.startMouseLog = startMouseLog; 
-	this.stopMouseLog = stopMouseLog; 
-	this.sendMotorLog = sendMotorLog; 
-	this.setData = setData; 
+	Module.startMouseLog = startMouseLog; 
+	Module.stopMouseLog = stopMouseLog; 
+	Module.sendMotorLog = sendMotorLog; 
+	Module.setData = setData; 
 
 	/* ======== IMPLEMENTATION OF MOTORLOGGER ==================== */
 	var motorLog = new Array();
-	var debug = 0;
+        var debug = 0;
 
 	// array to hold all moves, clicks, and metadata
 	var motorLoggerMoves = new Array();
@@ -136,7 +140,7 @@ function MotorLogger() {
 	}
 
 	function documentToClientCoordinates(mouseEvent, documentX, documentY) {
-		if (console) {
+		if (console && debug > 2) {
 			console.log("About to convert coordinates");
 			console.log("documentX: " + documentX);
 			console.log("mouse client X: " + mouseEvent.clientX);
@@ -212,7 +216,16 @@ function MotorLogger() {
 	var motorLoggerSending = false;
 
 	// function to send current data back to server
-	function sendMotorLog(destinationURL) {
+	function sendMotorLog(destinationURL, errorHandler) {
+                 if (!destinationURL) {
+                     console.error("Please provide a URL to send the motor log.");
+                     return;
+                 }
+
+                 // Default AJAX error handler
+                 errorHandler = errorHandler || 
+                     function(j, t, e) { console.error([j, t, e]); };
+
 		 if (!motorLoggerSending && motorLog.length > 0) {
 			motorLoggerSending = true;
 			motorLogTemp = motorLogTemp.concat(motorLog.slice(0)); 
@@ -220,9 +233,11 @@ function MotorLogger() {
 			
 			$.ajax({
 				url: destinationURL,
-				data: {motorlog : JSON.stringify(motorLogTemp.slice(0))},
+				data: {
+                                    motorlog: JSON.stringify(motorLogTemp.slice(0))
+                                },
 				type: 'POST',
-				error: function(r,s,t) {},
+				error: errorHandler,
 				success: function(d,s,r){
 					// if successful, then clear the local cache
 					motorLogTemp.splice(0, motorLogTemp.length);
@@ -232,4 +247,5 @@ function MotorLogger() {
 			});
 		}
 	}
-}
+        return Module;
+})(jQuery);
